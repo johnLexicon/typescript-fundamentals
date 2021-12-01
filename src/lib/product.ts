@@ -1,7 +1,7 @@
-import { Product } from './interfaces';
+import { IProduct } from './interfaces';
 
 // This will act as the foundation for other Product type classes (FoodProduct, SportingProduct)
-abstract class ProductBase implements Product {
+abstract class ProductBase implements IProduct {
   constructor(public id: number, public name: string, public icon: string) {}
   validate(): boolean {
     throw new Error('Not implemented');

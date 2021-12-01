@@ -1,8 +1,8 @@
-import { getProducts, Product } from '../lib';
+import { getProducts, IProduct } from '../lib';
 import { FoodProduct } from '../lib/product';
 
 class ProductOutput {
-  products: Product[] = [];
+  products: IProduct[] = [];
   form = this.getElement('#form');
   output = this.getElement('#output');
 
