@@ -78,110 +78,53 @@ async function getList<T>(url: string): Promise<T[]> {
 runTheLearningSamples();
 
 async function runTheLearningSamples() {
-  // Reusable code with generics
-  function whatIsIt_number(arg: number): number {
+  function cheCosa_numero(arg: number): number {
     return arg;
   }
 
-  console.log(`${prefix} Generics Overview`);
-  console.log(whatIsIt_number(11));
-
-  function whatIsIt_string(arg: string): string {
-    return arg;
-  }
-  console.log(whatIsIt_string('john'));
-
-  function whatIsIt_any(arg: any): any {
-    return arg;
-  }
-  console.log(whatIsIt_any(11));
-  console.log(whatIsIt_any('john'));
-
-  function whatIsIt_typed<T>(arg: T): T {
+  function cheCosa_testo(arg: string): string {
     return arg;
   }
 
-  let n: number = whatIsIt_typed<number>(11);
-  let s: string = whatIsIt_typed<string>('john');
-  let b: boolean = whatIsIt_typed<boolean>(true);
+  function cheCosa<T>(arg: T): T {
+    return arg;
+  }
+
+  console.log(cheCosa_numero(33));
+  console.log(cheCosa_testo('Kalle Anka'));
+  const n: number = cheCosa<number>(111);
+  const s: string = cheCosa<string>('Il testo');
+  const b: boolean = cheCosa<boolean>(true);
   console.log(n, s, b);
 
-  // generics on functions
-
-  // ~ examine getProducts() and how it returns a Promise<FoodProduct[]>
-  // ~ examine getList() and how it returns a Promise<T[]>
-
-  interface Customer {
+  interface ICustomer {
     id: number;
     name: string;
   }
 
   async function getData() {
-    console.log(`${prefix} Generic Functions`);
-
+    const customers = await getList<ICustomer>(customersURL);
+    console.table(customers);
     const products = await getList<FoodProduct>(productsURL);
     console.table(products);
-
-    const customers = await getList<Customer>(customersURL);
-    console.table(customers);
   }
-  await getData();
+  getData();
 
-  // generic interface
-
-  interface Model<T> {
+  interface IModel<T> {
     items: T[] | undefined;
     getItems: () => Promise<T[]>;
     getItemById: (id: number) => T | undefined;
   }
 
-  class FoodModel implements Model<FoodProduct> {
+  class FoodModel implements IModel<FoodProduct> {
     public items: FoodProduct[] | undefined;
-
-    async getItems(): Promise<FoodProduct[]> {
-      this.items = await getList<FoodProduct>(productsURL);
-      return this.items;
+    public async getItems(): Promise<FoodProduct[]> {
+      const items = await getList<FoodProduct>(productsURL);
+      return items;
     }
-
-    getItemById(id: number): FoodProduct | undefined {
-      return this.items ? this.items.find((item) => (id = item.id)) : undefined;
+    public getItemById(id: number): FoodProduct | undefined {
+      const item = this.items?.find((i) => i.id === id);
+      return item;
     }
   }
-
-  const foodModel: FoodModel = new FoodModel();
-  await foodModel.getItems();
-  console.log(`${prefix} Generic Interface`);
-  console.table(foodModel.items);
-
-  // generic classes
-
-  // see GenericModel<T>
-
-  const genericFoodModel = new GenericModel<FoodProduct>(productsURL);
-  const genericCustomerModel = new GenericModel<Customer>(customersURL);
-  await genericFoodModel.getItems();
-  await genericCustomerModel.getItems();
-  console.log(`${prefix} Generic Class`);
-  console.table(genericFoodModel.items);
-  console.table(genericCustomerModel.items);
-
-  // generic constraints
-
-  // see GenericModel and how it extends the T ==> class GenericModel<T extends HasId> {}
-
-  // Built-in Constraints
-
-  // ReadOnly<T> constraint
-  const model: FoodModel = new FoodModel();
-  await model.getItems();
-  const foodItem: Readonly<FoodProduct | undefined> = model.getItemById(10);
-  if (foodItem) {
-    // foodItem.name = 'some name';
-    // foodItem.icon = 'some icon';
-  }
-
-  // Partial<T> constraint
-  const pear = { name: 'pear' };
-  // const pearFood: FoodProduct = pear;
-  const pearFood: Partial<FoodProduct> = pear;
 }
